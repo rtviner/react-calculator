@@ -40,7 +40,7 @@ div#display {
 
 div#topButtons {
   width: 60%;
-  margin: 0.5em 5.5em .5em 0;
+  margin: 0.5em 5.5em 0.1em 0;
 }
 
 div#numberButtons {
@@ -67,7 +67,8 @@ div#operatorButtons {
 }
 
 button#sqRt {
-    margin-bottom: .65em;
+	margin-top: 0.25em;
+    margin-bottom: .47em;
 }
 
 button#decimal,
