@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import './style.css';
 
-const calculatorButtons = [
+const topButtons = [
     { type: "clear",
         class: "top-btn clear",
         value: "AC",
@@ -18,7 +18,10 @@ const calculatorButtons = [
         class: "top-btn",
         value: "Ans",
         filter: ""
-    },
+    }
+];
+
+const numberButtons = [
     { type: "nine",
         value: "9",
         class: "num-btn"
@@ -54,7 +57,10 @@ const calculatorButtons = [
     { type: "one",
         value: "1",
         class: "num-btn"
-    },
+    }
+];
+
+const bottomButtons = [
     { type: "zero",
         value: "0",
         class: "num-btn"
@@ -68,7 +74,10 @@ const calculatorButtons = [
         value: "=",
         class: "equal-btn",
         filter: ""
-    },
+    }
+];
+
+const operatorButtons = [
     { type: "sqRt",
         value: "√",
         class: "op-btn",
@@ -76,6 +85,7 @@ const calculatorButtons = [
     },
     { type: "multiply",
         value: "*",
+        class: "op-btn",
         decimalPlaces: (num) => {
             let match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
             if (!match) { return 0; }
@@ -90,14 +100,17 @@ const calculatorButtons = [
     },
     { type: "divide",
         value: "/",
+        class: "op-btn",
         calculation: (num1, num2) => num1 / num2
     },
     { type: "add",
         value: "+",
+        class: "op-btn",
         calculation: (num1, num2) => num1 + num2
     },
     { type: "subtract",
         value: "-",
+        class: "op-btn",
         calculation: (num1, num2) => num1 - num2
     }
 ];
@@ -109,7 +122,10 @@ class App extends React.Component {
         return (
             <Calculator
                 output={output}
-                calculatorButtons={calculatorButtons}
+                topButtons={topButtons}
+                numberButtons={numberButtons}
+                bottomButtons={bottomButtons}
+                operatorButtons={operatorButtons}
             />
         );
     }
@@ -131,25 +147,60 @@ Button.propTypes = {
     text: PropTypes.string
 };
 
-const Calculator = ({ output, calculatorButtons }) => (
+const Calculator = ({ output, topButtons, numberButtons, bottomButtons, operatorButtons }) => (
     <div id="calculator">
         <div id="display">
             {output}
         </div>
-        {calculatorButtons.map(button => (
-            <Button
-                key={button.type}
-                className={button.class}
-                id={button.type}
-                text={button.value}
-            />
-        ))}
+        <div id="topButtons">
+            {topButtons.map(button => (
+                <Button
+                    key={button.type}
+                    className={button.class}
+                    id={button.type}
+                    text={button.value}
+                />
+            ))}
+        </div>
+        <div id="numberButtons">
+            {numberButtons.map(button => (
+                <Button
+                    key={button.type}
+                    className={button.class}
+                    id={button.type}
+                    text={button.value}
+                />
+            ))}
+            <div id="bottomButtons">
+                {bottomButtons.map(button => (
+                    <Button
+                        key={button.type}
+                        className={button.class}
+                        id={button.type}
+                        text={button.value}
+                    />
+                ))}
+            </div>
+        </div>
+        <div id="operatorButtons">
+            {operatorButtons.map(button => (
+                <Button
+                    key={button.type}
+                    className={button.class}
+                    id={button.type}
+                    text={button.value}
+                />
+            ))}
+        </div>
     </div>
 );
 
 Calculator.propTypes = {
     output: PropTypes.string,
-    calculatorButtons: PropTypes.array
+    topButtons: PropTypes.array,
+    numberButtons: PropTypes.array,
+    bottomButtons: PropTypes.array,
+    operatorButtons: PropTypes.array
 };
 
 ReactDOM.render(<App />, document.getElementById('root'));
