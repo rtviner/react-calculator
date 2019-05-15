@@ -1,0 +1,94 @@
+body {
+	font: 100% arial, sans-serif;
+	text-align: center;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+button {
+	font-size: 2em;
+	height: 2em;
+	border-radius: 10px;
+	border: .01em solid #000;	
+	background-color: #FFF;
+}
+
+div#calculator {
+    background-color: #536878;
+    width: 393px;
+    height: 525px;
+    display: inline-flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    border-radius: 15px;
+    margin: 0 auto;
+    margin-top: 4em;
+}
+
+div#display {
+  font-size: 2em;
+  color: #FFF;
+  height: 1.5em;
+  width: 80%;
+  margin: 1.25em auto .02em auto;
+  padding-top: 1em;
+  background-color: #36454f;
+  border-radius: 2px;
+  overflow-y: scroll;
+  white-space: nowrap;
+}
+
+div#topButtons {
+  width: 60%;
+  margin: 0.5em 5.5em .5em 0;
+}
+
+div#numberButtons {
+    display: inline-flex;
+    flex-flow: row-reverse wrap;
+    width: 60%;
+    align-content: flex-start;
+    margin: 0;
+}
+
+div#bottomButtons {
+  	width: 100%;
+  	margin: 0;
+  	margin-bottom: .5em;
+  	display: flex;
+  	align-content: center;
+}
+
+div#operatorButtons {
+	display: flex;
+	flex-flow: column;
+	margin: -5.5em 0 .5em 0.65em;
+ 	align-content: flex-start;
+}
+
+button#sqRt {
+    margin-bottom: .65em;
+}
+
+button#decimal,
+button#equals,
+button.num-btn,
+button.top-btn,
+button.op-btn {
+	padding: .25em;
+	margin: .1em;
+	width: 2.25em;
+}
+
+button.clear {
+	background-color: #965050;
+}
+
+button.op-btn {
+	background-color: #c7c4c4;
+}
+
+
+
+
+
