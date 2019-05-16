@@ -15,8 +15,8 @@ button {
 
 div#calculator {
     background-color: #536878;
-    width: 393px;
-    height: 525px;
+    width: 338px;
+    height: 480px;
     display: inline-flex;
     flex-flow: row wrap;
     justify-content: center;
@@ -29,8 +29,8 @@ div#display {
   font-size: 2em;
   color: #FFF;
   height: 1.5em;
-  width: 80%;
-  margin: 1.25em auto .02em auto;
+  width: 97%;
+  margin: .75em auto .5em auto;
   padding-top: 1em;
   background-color: #36454f;
   border-radius: 2px;
@@ -41,10 +41,9 @@ div#display {
 div#mainButtons {
     display: inline-flex;
     flex-flow: row-reverse wrap;
-    width: 60%;
+    width: 70%;
     align-content: flex-start;
     margin: 0;
-    margin-top: 0.5em;
 }
 
 div#bottomButtons {
@@ -58,7 +57,7 @@ div#bottomButtons {
 div#operatorButtons {
     display: flex;
     flex-flow: column;
-    margin: 0.5em 0 .5em 0.65em;
+    margin: 0 0 .5em 0.09em;
     align-content: flex-start;
 }
 
