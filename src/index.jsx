@@ -3,116 +3,131 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import './style.css';
 
-const topButtons = [
-    { type: "clear",
-        class: "top-btn clear",
-        value: "AC"
-    },
-    { type: "delete",
-        class: "top-btn clear",
-        value: "Del"
-    },
-    { type: "answer",
-        class: "top-btn",
-        value: "Ans"
-    }
-];
-
-const numberButtons = [
-    { type: "nine",
-        value: "9",
-        class: "num-btn"
-    },
-    { type: "eight",
-        value: "8",
-        class: "num-btn"
-    },
-    { type: "seven",
-        value: "7",
-        class: "num-btn"
-    },
-    { type: "six",
-        value: "6",
-        class: "num-btn"
-    },
-    { type: "five",
-        value: "5",
-        class: "num-btn"
-    },
-    { type: "four",
-        value: "4",
-        class: "num-btn"
-    },
-    { type: "three",
-        value: "3",
-        class: "num-btn"
-    },
-    { type: "two",
-        value: "2",
-        class: "num-btn"
-    },
-    { type: "one",
-        value: "1",
-        class: "num-btn"
-    }
-];
-
-const bottomButtons = [
-    { type: "zero",
-        value: "0",
-        class: "num-btn"
-    },
-    { type: "decimal",
-        value: ".",
-        class: "dec-btn",
-        filter: ""
-    },
-    { type: "equals",
-        value: "=",
-        class: "equal-btn",
-        filter: ""
-    }
-];
-
-const operatorButtons = [
-    { type: "sqRt",
-        value: "√",
-        class: "op-btn",
-        calculation: (num) => Math.sqrt(num)
-    },
-    { type: "multiply",
-        value: "*",
-        class: "op-btn",
-        decimalPlaces: (num) => {
-            let match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-            if (!match) { return 0; }
-            return Math.max(0,
-                (match[1] ? match[1].length : 0) -
-                (match[2] ? +match[2] : 0));
+const calculatorButtons = {
+    mainButtons: [
+        { label: "answer",
+            type: "answer",
+            class: "top-btn",
+            value: "Ans"
         },
-        calculation: (num1, num2) => {
-            let product = num1 * num2;
-            return parseFloat(product.toFixed(this.decimalPlaces(num1) + this.decimalPlaces(num2)));
+        { label: "delete",
+            type: "delete",
+            class: "top-btn clear",
+            value: "Del"
+        },
+        { label: "clear",
+            type: "clear",
+            class: "top-btn clear",
+            value: "AC"
+        },
+        { label: "nine",
+            type: "number",
+            value: "9",
+            class: "num-btn"
+        },
+        { label: "eight",
+            type: "number",
+            value: "8",
+            class: "num-btn"
+        },
+        { label: "seven",
+            type: "number",
+            value: "7",
+            class: "num-btn"
+        },
+        { label: "six",
+            type: "number",
+            value: "6",
+            class: "num-btn"
+        },
+        { label: "five",
+            type: "number",
+            value: "5",
+            class: "num-btn"
+        },
+        { label: "four",
+            type: "number",
+            value: "4",
+            class: "num-btn"
+        },
+        { label: "three",
+            type: "number",
+            value: "3",
+            class: "num-btn"
+        },
+        { label: "two",
+            type: "number",
+            value: "2",
+            class: "num-btn"
+        },
+        { label: "one",
+            type: "number",
+            value: "1",
+            class: "num-btn"
         }
-    },
-    { type: "divide",
-        value: "/",
-        class: "op-btn",
-        calculation: (num1, num2) => num1 / num2
-    },
-    { type: "add",
-        value: "+",
-        class: "op-btn",
-        calculation: (num1, num2) => num1 + num2
-    },
-    { type: "subtract",
-        value: "-",
-        class: "op-btn",
-        calculation: (num1, num2) => num1 - num2
-    }
-];
-
-const output = "Hello";
+    ],
+    bottomButtons: [
+        { label: "zero",
+            type: "zero",
+            value: "0",
+            class: "num-btn"
+        },
+        { label: "decimal",
+            type: "decimal",
+            value: ".",
+            class: "dec-btn",
+            filter: ""
+        },
+        { label: "equals",
+            type: "equals",
+            value: "=",
+            class: "equal-btn",
+            filter: ""
+        }
+    ],
+    operatorButtons: [
+        { label: "sqRt",
+            type: "operator",
+            value: "√",
+            class: "op-btn",
+            calculation: (num) => Math.sqrt(num)
+        },
+        { label: "multiply",
+            type: "operator",
+            value: "*",
+            class: "op-btn",
+            decimalPlaces: (num) => {
+                let match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+                if (!match) { return 0; }
+                return Math.max(0,
+                    (match[1] ? match[1].length : 0) -
+                    (match[2] ? +match[2] : 0));
+            },
+            calculation: (num1, num2) => {
+                let product = num1 * num2;
+                return parseFloat(product.toFixed(this.decimalPlaces(num1) + this.decimalPlaces(num2)));
+            }
+        },
+        { label: "divide",
+            type: "operator",
+            value: "/",
+            class: "op-btn",
+            calculation: (num1, num2) => num1 / num2
+        },
+        { label: "add",
+            type: "operator",
+            value: "+",
+            class: "op-btn",
+            calculation: (num1, num2) => num1 + num2
+        },
+        { label: "subtract",
+            type: "operator",
+            value: "-",
+            class: "op-btn",
+            calculation: (num1, num2) => num1 - num2
+        }
+    ]
+};
 
 class App extends React.Component {
     constructor (props) {
@@ -120,27 +135,50 @@ class App extends React.Component {
 
         this.state = {
             formula: null,
+            output: "0",
             error: null
         };
 
         this.onClick = this.onClick.bind(this);
     }
 
-    onClick = (event) => console.log(event.target);
+    onClick = (clickType, event) => {
+        console.log(clickType);
+        console.log(event.target.innerHTML);
+        // sanitizeInput(clickType, event);
+    }
+
+    // sanitizeInput(input) {
+    //     if (clickType === "clear") {
+    //         let newInput = [];
+    //     }
+    //     if (clickType === "delete") {
+    //         let newInput = [input.slice()];
+    //     }
+    //     if (clickType === "answer") {
+    //         let newInput =
+    //     }
+    //     if (clickType === "answer") {
+    //         let newInput =
+    //     }
+    //     if (clickType === "answer") {
+    //         let newInput =
+    //     }
+    // }
+
+
     // setInput
     // resetInput
     // setOutput
     // clearOutput
 
     render () {
+        const { output } = this.state;
         return (
             <Calculator
                 output={output}
-                topButtons={topButtons}
+                calculatorButtons={calculatorButtons}
                 onClick={this.onClick}
-                numberButtons={numberButtons}
-                bottomButtons={bottomButtons}
-                operatorButtons={operatorButtons}
             />
         );
     }
@@ -164,67 +202,51 @@ Button.propTypes = {
     text: PropTypes.string
 };
 
-const Calculator =
-    ({ output, topButtons, onClick, numberButtons, bottomButtons, operatorButtons }) =>
-        (
-            <div id="calculator">
-                <div id="display">
-                    {output}
-                </div>
-                <div id="topButtons">
-                    {topButtons.map(button => (
-                        <Button
-                            onClick={onClick}
-                            key={button.type}
-                            className={button.class}
-                            id={button.type}
-                            text={button.value}
-                        />
-                    ))}
-                </div>
-                <div id="numberButtons">
-                    {numberButtons.map(button => (
-                        <Button
-                            onClick={onClick}
-                            key={button.type}
-                            className={button.class}
-                            id={button.type}
-                            text={button.value}
-                        />
-                    ))}
-                    <div id="bottomButtons">
-                        {bottomButtons.map(button => (
-                            <Button
-                                onClick={onClick}
-                                key={button.type}
-                                className={button.class}
-                                id={button.type}
-                                text={button.value}
-                            />
-                        ))}
-                    </div>
-                </div>
-                <div id="operatorButtons">
-                    {operatorButtons.map(button => (
-                        <Button
-                            onClick={onClick}
-                            key={button.type}
-                            className={button.class}
-                            id={button.type}
-                            text={button.value}
-                        />
-                    ))}
-                </div>
+const Calculator = ({ output, calculatorButtons, onClick }) => (
+    <div id="calculator">
+        <div id="display">
+            {output}
+        </div>
+        <div id="mainButtons">
+            {calculatorButtons.mainButtons.map(button => (
+                <Button
+                    onClick={() => onClick(button.type, event)}
+                    key={button.label}
+                    className={button.class}
+                    id={button.label}
+                    text={button.value}
+                />
+            ))}
+            <div id="bottomButtons">
+                {calculatorButtons.bottomButtons.map(button => (
+                    <Button
+                        onClick={() => onClick(button.type, event)}
+                        key={button.label}
+                        className={button.class}
+                        id={button.label}
+                        text={button.value}
+                    />
+                ))}
             </div>
-        );
+        </div>
+        <div id="operatorButtons">
+            {calculatorButtons.operatorButtons.map(button => (
+                <Button
+                    onClick={() => onClick(button.type, event)}
+                    key={button.label}
+                    className={button.class}
+                    id={button.label}
+                    text={button.value}
+                />
+            ))}
+        </div>
+    </div>
+);
 
 Calculator.propTypes = {
     output: PropTypes.string,
-    topButtons: PropTypes.array,
-    onClick: PropTypes.func,
-    numberButtons: PropTypes.array,
-    bottomButtons: PropTypes.array,
-    operatorButtons: PropTypes.array
+    calculatorButtons: PropTypes.object,
+    onClick: PropTypes.func
 };
 
 ReactDOM.render(<App />, document.getElementById('root'));
