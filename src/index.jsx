@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import './style.css';
 
-const calculatorButtons = {
+const DEFAULT_OUTPUT = "0";
+
+const CALCULATOR_BUTTONS = {
     mainButtons: [
         { label: "answer",
             type: "answer",
@@ -87,7 +89,7 @@ const calculatorButtons = {
     ],
     operatorButtons: [
         { label: "sqRt",
-            type: "operator",
+            type: "sqRt",
             value: "√",
             class: "op-btn",
             calculation: (num) => Math.sqrt(num)
@@ -135,41 +137,59 @@ class App extends React.Component {
 
         this.state = {
             formula: null,
-            output: "0",
+            output: DEFAULT_OUTPUT,
             error: null
         };
 
         this.onClick = this.onClick.bind(this);
+        this.sanitizeInput = this.sanitizeInput.bind(this);
+        this.setOutput = this.setOutput.bind(this);
+    }
+
+    setOutput (string) {
+        this.setState({ output: string });
+    }
+
+    sanitizeInput (type, input) {
+        let newInput;
+        // if (type === "clear") {
+        //     let newInput = defaultOutput;
+        // }
+        // if (type === "delete") {
+        //     input string before without last character
+        // }
+        // if (type === "answer") {
+        //     let newInput = previous formula answer?
+        // }
+        if (type === "number") {
+            newInput = input;
+        }
+        // if (type === "zero") {
+        //     0 as number before === nothing changes
+        // }
+        // if (type === "decimal") {
+        //     allowed if first in string or trailing a number or operator
+        // }
+        // if (type === "equals") {
+        //     sqrt() no number == error, decimal no number == error
+        // }
+        // if (type === "sqRt") {
+        //     allowed if first in string or first after other operator
+        // }
+        // if (type === "operator") {
+        //
+        // }
+        this.setOutput(newInput);
     }
 
     onClick = (clickType, event) => {
         console.log(clickType);
         console.log(event.target.innerHTML);
-        // sanitizeInput(clickType, event);
+        this.sanitizeInput(clickType, event.target.innerHTML);
     }
-
-    // sanitizeInput(input) {
-    //     if (clickType === "clear") {
-    //         let newInput = [];
-    //     }
-    //     if (clickType === "delete") {
-    //         let newInput = [input.slice()];
-    //     }
-    //     if (clickType === "answer") {
-    //         let newInput =
-    //     }
-    //     if (clickType === "answer") {
-    //         let newInput =
-    //     }
-    //     if (clickType === "answer") {
-    //         let newInput =
-    //     }
-    // }
-
 
     // setInput
     // resetInput
-    // setOutput
     // clearOutput
 
     render () {
@@ -177,7 +197,7 @@ class App extends React.Component {
         return (
             <Calculator
                 output={output}
-                calculatorButtons={calculatorButtons}
+                calculatorButtons={CALCULATOR_BUTTONS}
                 onClick={this.onClick}
             />
         );
