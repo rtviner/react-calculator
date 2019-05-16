@@ -6,18 +6,15 @@ import './style.css';
 const topButtons = [
     { type: "clear",
         class: "top-btn clear",
-        value: "AC",
-        filter: ""
+        value: "AC"
     },
     { type: "delete",
         class: "top-btn clear",
-        value: "Del",
-        filter: ""
+        value: "Del"
     },
     { type: "answer",
         class: "top-btn",
-        value: "Ans",
-        filter: ""
+        value: "Ans"
     }
 ];
 
@@ -118,11 +115,29 @@ const operatorButtons = [
 const output = "Hello";
 
 class App extends React.Component {
+    constructor (props) {
+        super(props);
+
+        this.state = {
+            formula: null,
+            error: null
+        };
+
+        this.onClick = this.onClick.bind(this);
+    }
+
+    onClick = (event) => console.log(event.target);
+    // setInput
+    // resetInput
+    // setOutput
+    // clearOutput
+
     render () {
         return (
             <Calculator
                 output={output}
                 topButtons={topButtons}
+                onClick={this.onClick}
                 numberButtons={numberButtons}
                 bottomButtons={bottomButtons}
                 operatorButtons={operatorButtons}
@@ -131,8 +146,9 @@ class App extends React.Component {
     }
 }
 
-const Button = ({ className, id, text }) => (
+const Button = ({ onClick, className, id, text }) => (
     <button
+        onClick={onClick}
         className={className}
         id={id}
         type="button"
@@ -142,62 +158,70 @@ const Button = ({ className, id, text }) => (
 );
 
 Button.propTypes = {
+    onClick: PropTypes.func,
     className: PropTypes.string,
     id: PropTypes.string,
     text: PropTypes.string
 };
 
-const Calculator = ({ output, topButtons, numberButtons, bottomButtons, operatorButtons }) => (
-    <div id="calculator">
-        <div id="display">
-            {output}
-        </div>
-        <div id="topButtons">
-            {topButtons.map(button => (
-                <Button
-                    key={button.type}
-                    className={button.class}
-                    id={button.type}
-                    text={button.value}
-                />
-            ))}
-        </div>
-        <div id="numberButtons">
-            {numberButtons.map(button => (
-                <Button
-                    key={button.type}
-                    className={button.class}
-                    id={button.type}
-                    text={button.value}
-                />
-            ))}
-            <div id="bottomButtons">
-                {bottomButtons.map(button => (
-                    <Button
-                        key={button.type}
-                        className={button.class}
-                        id={button.type}
-                        text={button.value}
-                    />
-                ))}
+const Calculator =
+    ({ output, topButtons, onClick, numberButtons, bottomButtons, operatorButtons }) =>
+        (
+            <div id="calculator">
+                <div id="display">
+                    {output}
+                </div>
+                <div id="topButtons">
+                    {topButtons.map(button => (
+                        <Button
+                            onClick={onClick}
+                            key={button.type}
+                            className={button.class}
+                            id={button.type}
+                            text={button.value}
+                        />
+                    ))}
+                </div>
+                <div id="numberButtons">
+                    {numberButtons.map(button => (
+                        <Button
+                            onClick={onClick}
+                            key={button.type}
+                            className={button.class}
+                            id={button.type}
+                            text={button.value}
+                        />
+                    ))}
+                    <div id="bottomButtons">
+                        {bottomButtons.map(button => (
+                            <Button
+                                onClick={onClick}
+                                key={button.type}
+                                className={button.class}
+                                id={button.type}
+                                text={button.value}
+                            />
+                        ))}
+                    </div>
+                </div>
+                <div id="operatorButtons">
+                    {operatorButtons.map(button => (
+                        <Button
+                            onClick={onClick}
+                            key={button.type}
+                            className={button.class}
+                            id={button.type}
+                            text={button.value}
+                        />
+                    ))}
+                </div>
             </div>
-        </div>
-        <div id="operatorButtons">
-            {operatorButtons.map(button => (
-                <Button
-                    key={button.type}
-                    className={button.class}
-                    id={button.type}
-                    text={button.value}
-                />
-            ))}
-        </div>
-    </div>
-);
+        );
 
 Calculator.propTypes = {
     output: PropTypes.string,
     topButtons: PropTypes.array,
+    onClick: PropTypes.func,
     numberButtons: PropTypes.array,
     bottomButtons: PropTypes.array,
     operatorButtons: PropTypes.array
