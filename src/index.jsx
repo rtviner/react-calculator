@@ -100,7 +100,6 @@ const CALCULATOR_BUTTONS = {
             class: "op-btn",
             decimalPlaces: (num) => {
                 let match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-                if (!match) { return 0; }
                 return Math.max(0,
                     (match[1] ? match[1].length : 0) -
                     (match[2] ? +match[2] : 0));
@@ -136,33 +135,44 @@ class App extends React.Component {
         super(props);
 
         this.state = {
-            formula: null,
+            input: null,
             output: DEFAULT_OUTPUT,
+            answer: null;
             error: null
         };
 
-        this.onClick = this.onClick.bind(this);
-        this.sanitizeInput = this.sanitizeInput.bind(this);
         this.setOutput = this.setOutput.bind(this);
+        this.backspaceOutput = this.backspaceOutput.bind(this);
+        this.sanitizeInput = this.sanitizeInput.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
 
     setOutput (string) {
+        console.log("ouputBeforeSet:", this.state.output);
+
         this.setState({ output: string });
+    }
+
+    backspaceOutput () {
+        this.setOutput(this.state.output.slice(0, this.state.output.length - 1));
     }
 
     sanitizeInput (type, input) {
         let newInput;
-        // if (type === "clear") {
-        //     let newInput = defaultOutput;
-        // }
-        // if (type === "delete") {
-        //     input string before without last character
-        // }
+
+        if (type === "clear") {
+            newInput = DEFAULT_OUTPUT;
+        }
+        if (type === "delete") {
+            this.backspaceOutput();
+        }
         // if (type === "answer") {
         //     let newInput = previous formula answer?
         // }
         if (type === "number") {
-            newInput = input;
+            newInput = (this.state.output !== DEFAULT_OUTPUT) ?
+                this.state.output + input :
+                input;
         }
         // if (type === "zero") {
         //     0 as number before === nothing changes
@@ -171,20 +181,19 @@ class App extends React.Component {
         //     allowed if first in string or trailing a number or operator
         // }
         // if (type === "equals") {
-        //     sqrt() no number == error, decimal no number == error
+        //     sqrt() no number == error, decimal and nothing else === error, otherwise rerender whats on screen unless complete function, then calculate answer
         // }
         // if (type === "sqRt") {
         //     allowed if first in string or first after other operator
         // }
         // if (type === "operator") {
-        //
+        //if previous character is operator, change that character to new operator pressed
         // }
+        console.log("newInputAtSanitizenewInput:", newInput);
         this.setOutput(newInput);
     }
 
     onClick = (clickType, event) => {
-        console.log(clickType);
-        console.log(event.target.innerHTML);
         this.sanitizeInput(clickType, event.target.innerHTML);
     }
 
