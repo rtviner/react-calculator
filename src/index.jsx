@@ -171,6 +171,8 @@ class App extends React.Component {
     constructor (props) {
         super(props);
 
+        this._isMounted = false;
+
         this.state = {
             input: null,
             output: DEFAULT_OUTPUT,
@@ -190,15 +192,21 @@ class App extends React.Component {
     }
 
     componentDidMount () {
+        this._isMounted = true;
+
         window.addEventListener('keypress', (event) => {
-            if (event.key === "Enter") {
-                event.preventDefault();
+            if (this._isMounted) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                }
+                this.filter(event.key);
             }
-            this.filter(event.key);
         });
     }
 
     componentWillUnmount () {
+        this._isMounted = false;
+
         window.removeEventListener('keypress', (event) => this.filter(event.key));
     }
 
