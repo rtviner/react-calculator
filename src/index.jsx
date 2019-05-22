@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import './style.css';
 
-const multiplicationOrDivision = /(\-*\d*\.?\d+)\s{1}([*/]+)\s{1}(\-*\d*\.?\d+)/;
-const additionOrSubtraction = /(\-*\d*\.?\d+)\s{1}([+-]+)\s{1}(\-*\d*\.?\d+)/;
+const multiplicationOrDivision = /(\-*\d*\.?\d*)\s{1}([*/]+)\s{1}(\-*\d*\.?\d*)/;
+const additionOrSubtraction = /(\-*\d*\.?\d*)\s{1}([+-]+)\s{1}(\-*\d*\.?\d*)/;
 const DEFAULT_OUTPUT = "0";
 
 const CALCULATOR_BUTTONS = {
@@ -93,41 +93,27 @@ const CALCULATOR_BUTTONS = {
         { label: "sqRt",
             type: "sqRt",
             value: "√",
-            class: "op-btn",
-            calculation: (num) => Math.sqrt(num)
+            class: "op-btn"
         },
         { label: "multiply",
             type: "operator",
             value: "*",
-            class: "op-btn",
-            decimalPlaces: (num) => {
-                let match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-                return Math.max(0,
-                    (match[1] ? match[1].length : 0) -
-                    (match[2] ? +match[2] : 0));
-            },
-            calculation: (num1, num2) => {
-                let product = num1 * num2;
-                return parseFloat(product.toFixed(this.decimalPlaces(num1) + this.decimalPlaces(num2)));
-            }
+            class: "op-btn"
         },
         { label: "divide",
             type: "operator",
             value: "/",
-            class: "op-btn",
-            calculation: (num1, num2) => num1 / num2
+            class: "op-btn"
         },
         { label: "add",
             type: "operator",
             value: "+",
-            class: "op-btn",
-            calculation: (num1, num2) => num1 + num2
+            class: "op-btn"
         },
         { label: "subtract",
             type: "operator",
             value: "-",
-            class: "op-btn",
-            calculation: (num1, num2) => num1 - num2
+            class: "op-btn"
         }
     ]
 };
@@ -185,6 +171,7 @@ class App extends React.Component {
         this.backspace = this.backspace.bind(this);
         this.addValue = this.addValue.bind(this);
         this.addOperator = this.addOperator.bind(this);
+        this.replaceOperator = this.replaceOperator.bind(this);
         this.calculateSqRt = this.calculateSqRt.bind(this);
         this.reduceEquations = this.reduceEquations.bind(this);
         this.answer = this.answer.bind(this);
@@ -237,6 +224,9 @@ class App extends React.Component {
         if (event === "=" || event === "Enter") {
             return this.reduceEquations(output);
         }
+        if (lastNum(output).length === 0 && output.length >= 1 && /[+/*-]/.test(event)) {
+            return this.replaceOperator(event);
+        }
         if (lastNum(output).length !== 0 && lastNum(output) !== "." && /[+/*-]/.test(event)) {
             return this.addOperator(event);
         }
@@ -266,9 +256,10 @@ class App extends React.Component {
         this.setState({ error: !error });
     }
 
-    backspace (output) {
-        const outputArray = [...this.state.output];
-        const backspacedInput = (lastNum(this.state.output).length > 0) ?
+    backspace () {
+        const { output } = this.state;
+        const outputArray = [...output];
+        const backspacedInput = (lastNum(output).length > 0) ?
             outputArray.slice(0, outputArray.length - 1) :
             outputArray.slice(0, outputArray.length - 3);
         this.setOutput(backspacedInput);
@@ -293,6 +284,15 @@ class App extends React.Component {
         if (result) {
             this.setResult();
         }
+        this.setOutput(inputArray);
+    }
+
+    replaceOperator (operator) {
+        const { output } = this.state;
+        const outputArray = [...output];
+        const replacedOutput = outputArray.slice(0, outputArray.length - 3);
+        let operatorString = " " + operator + " ";
+        const inputArray = [...replacedOutput, operatorString];
         this.setOutput(inputArray);
     }
 
