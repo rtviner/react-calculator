@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import './style.css';
 
+const multiplicationOrDivision = /(\-*\d*\.?\d+)\s{1}([*/]+)\s{1}(\-*\d*\.?\d+)/;
+const additionOrSubtraction = /(\-*\d*\.?\d+)\s{1}([+-]+)\s{1}(\-*\d*\.?\d+)/;
 const DEFAULT_OUTPUT = "0";
 
 const CALCULATOR_BUTTONS = {
@@ -130,6 +132,41 @@ const CALCULATOR_BUTTONS = {
     ]
 };
 
+const lastNum = (string) => {
+    let outputArray = string.split(" ");
+    return outputArray[outputArray.length - 1];
+};
+
+const add = (number1, number2) => number1 + number2;
+
+const subtract = (number1, number2) => number1 - number2;
+
+const multiply = (number1, number2) => {
+    let product = number1 * number2;
+    return parseFloat(product.toFixed(decimalPlaces(number1) + decimalPlaces(number2)));
+};
+
+function decimalPlaces (number) {
+    var match = ('' + number).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    return Math.max(
+        0,
+        (match[1] ? match[1].length : 0) -
+        (match[2] ? +match[2] : 0));
+}
+
+const divide = (number1, number2) => number1 / number2;
+
+const sqrt = (number) => Math.sqrt(number);
+
+const calculations = {
+    "/": (num1, num2) => divide(num1, num2),
+    "*": (num1, num2) => multiply(num1, num2),
+    "+": (num1, num2) => add(num1, num2),
+    "-": (num1, num2) => subtract(num1, num2)
+};
+
+const eNotation = (numberString) => Number.parseFloat(numberString).toExponential(5);
+
 class App extends React.Component {
     constructor (props) {
         super(props);
@@ -137,69 +174,150 @@ class App extends React.Component {
         this.state = {
             input: null,
             output: DEFAULT_OUTPUT,
-            answer: null;
-            error: null
+            answer: "0",
+            result: false,
+            error: false
         };
 
         this.setOutput = this.setOutput.bind(this);
-        this.backspaceOutput = this.backspaceOutput.bind(this);
-        this.sanitizeInput = this.sanitizeInput.bind(this);
-        this.onClick = this.onClick.bind(this);
+        this.backspace = this.backspace.bind(this);
+        this.addValue = this.addValue.bind(this);
+        this.addOperator = this.addOperator.bind(this);
+        this.calculateSqRt = this.calculateSqRt.bind(this);
+        this.reduceEquations = this.reduceEquations.bind(this);
+        this.answer = this.answer.bind(this);
+        this.filter = this.filter.bind(this);
     }
 
-    setOutput (string) {
-        console.log("ouputBeforeSet:", this.state.output);
-
-        this.setState({ output: string });
+    componentDidMount () {
+        window.addEventListener('keypress', (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+            }
+            this.filter(event.key);
+        });
     }
 
-    backspaceOutput () {
-        this.setOutput(this.state.output.slice(0, this.state.output.length - 1));
+    componentWillUnmount () {
+        window.removeEventListener('keypress', (event) => this.filter(event.key));
     }
 
-    sanitizeInput (type, input) {
-        let newInput;
+    filter (event) {
+        const { output, error, answer } = this.state;
 
-        if (type === "clear") {
-            newInput = DEFAULT_OUTPUT;
+        if (event === "AC") {
+            let newInputValue = [DEFAULT_OUTPUT];
+            return this.setOutput(newInputValue);
         }
-        if (type === "delete") {
-            this.backspaceOutput();
+        if (event === "Backspace" || event === "Del") {
+            return this.backspace();
         }
-        // if (type === "answer") {
-        //     let newInput = previous formula answer?
-        // }
-        if (type === "number") {
-            newInput = (this.state.output !== DEFAULT_OUTPUT) ?
-                this.state.output + input :
-                input;
+        if (/\d/.test(event)) {
+            return this.addValue(event);
         }
-        // if (type === "zero") {
-        //     0 as number before === nothing changes
-        // }
-        // if (type === "decimal") {
-        //     allowed if first in string or trailing a number or operator
-        // }
-        // if (type === "equals") {
-        //     sqrt() no number == error, decimal and nothing else === error, otherwise rerender whats on screen unless complete function, then calculate answer
-        // }
-        // if (type === "sqRt") {
-        //     allowed if first in string or first after other operator
-        // }
-        // if (type === "operator") {
-        //if previous character is operator, change that character to new operator pressed
-        // }
-        console.log("newInputAtSanitizenewInput:", newInput);
-        this.setOutput(newInput);
+        if (event === "Ans" && lastNum(output).length === 0) {
+            return this.addValue(answer);
+        }
+        if (event === "." && lastNum(output).indexOf(".") === -1) {
+            return this.addValue(event);
+        }
+        if (lastNum(output).length === 0 || lastNum(output) === "." || error) {
+            if (event === "√" || event === "=" || event === "Enter") {
+                return this.setOutput(["ERROR"]);
+            }
+        }
+        if (event === "=" || event === "Enter") {
+            return this.reduceEquations(output);
+        }
+        if (lastNum(output).length !== 0 && lastNum(output) !== "." && /[+/*-]/.test(event)) {
+            return this.addOperator(event);
+        }
+        if (lastNum(output).length !== 0 &&
+            lastNum(output) !== "." && event === "√") {
+            this.reduceEquations(output);
+            return this.calculateSqRt(output);
+        }
     }
 
-    onClick = (clickType, event) => {
-        this.sanitizeInput(clickType, event.target.innerHTML);
+    setOutput (array) {
+        let newOutputValue = array.join("");
+        this.setState({ output: newOutputValue });
     }
 
-    // setInput
-    // resetInput
-    // clearOutput
+    setAnswer (answer) {
+        this.setState({ answer: answer });
+    }
+
+    setResult () {
+        const { result } = this.state;
+        this.setState({ result: !result });
+    }
+
+    setError () {
+        const { error } = this.state;
+        this.setState({ error: !error });
+    }
+
+    backspace (output) {
+        const outputArray = [...this.state.output];
+        const backspacedInput = (lastNum(this.state.output).length > 0) ?
+            outputArray.slice(0, outputArray.length - 1) :
+            outputArray.slice(0, outputArray.length - 3);
+        this.setOutput(backspacedInput);
+    }
+
+    addValue (number) {
+        const { output, result, error } = this.state;
+        const inputArray = (result || error || output === DEFAULT_OUTPUT) ? [number] : [...output, number];
+        if (result) {
+            this.setResult();
+        }
+        if (error) {
+            this.setError();
+        }
+        this.setOutput(inputArray);
+    }
+
+    addOperator (operator) {
+        const { output, result } = this.state;
+        let operatorString = " " + operator + " ";
+        const inputArray = [...output, operatorString];
+        if (result) {
+            this.setResult();
+        }
+        this.setOutput(inputArray);
+    }
+
+    calculateSqRt = (number) => this.answer(sqrt(number));
+
+    reduceEquations (equationString) {
+        const makeEquation = (expression, equationString) => {
+            const match = expression.exec(equationString);
+            const num1 = parseFloat(match[1]);
+            const operator = match[2];
+            const num2 = parseFloat(match[3]);
+            const reducedEquationString = equationString.replace(expression, calculations[operator](num1, num2));
+            this.reduceEquations(reducedEquationString);
+        };
+        // if there are no operators (with spaces after them) left then return the answer because there are no more equations to solve
+        if (!/[+\/*-]{1}\s/.test(equationString)) {
+            return this.answer(equationString);
+        }
+        //otherwise keep making and solving equations
+        const expression = (/[*/]\s/.test(equationString)) ?
+            multiplicationOrDivision :
+            additionOrSubtraction;
+
+        makeEquation(expression, equationString);
+    }
+
+    answer (numberString) {
+        const answer = (numberString.length > 20) ? eNotation(numberString) : numberString;
+        let finalAnswer = [answer];
+        this.setOutput(finalAnswer);
+        this.setResult();
+        this.setAnswer(finalAnswer);
+    }
 
     render () {
         const { output } = this.state;
@@ -207,7 +325,7 @@ class App extends React.Component {
             <Calculator
                 output={output}
                 calculatorButtons={CALCULATOR_BUTTONS}
-                onClick={this.onClick}
+                onClick={(event) => this.filter(event.target.innerHTML)}
             />
         );
     }
@@ -239,7 +357,7 @@ const Calculator = ({ output, calculatorButtons, onClick }) => (
         <div id="mainButtons">
             {calculatorButtons.mainButtons.map(button => (
                 <Button
-                    onClick={() => onClick(button.type, event)}
+                    onClick={onClick}
                     key={button.label}
                     className={button.class}
                     id={button.label}
@@ -249,7 +367,7 @@ const Calculator = ({ output, calculatorButtons, onClick }) => (
             <div id="bottomButtons">
                 {calculatorButtons.bottomButtons.map(button => (
                     <Button
-                        onClick={() => onClick(button.type, event)}
+                        onClick={onClick}
                         key={button.label}
                         className={button.class}
                         id={button.label}
@@ -261,7 +379,7 @@ const Calculator = ({ output, calculatorButtons, onClick }) => (
         <div id="operatorButtons">
             {calculatorButtons.operatorButtons.map(button => (
                 <Button
-                    onClick={() => onClick(button.type, event)}
+                    onClick={onClick}
                     key={button.label}
                     className={button.class}
                     id={button.label}
