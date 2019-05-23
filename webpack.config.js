@@ -6,10 +6,10 @@ module.exports = {
 	entry: './src/index.jsx',
 	output: {
 		filename: 'main.js',
-		path: path.resolve(__dirname, './dist')	
+		path: path.resolve(__dirname, 'build')	
 	},
 	devServer: {
-		contentBase: './dist',
+		contentBase: './build',
 	},
 	module: {
 		rules: [
@@ -31,7 +31,7 @@ module.exports = {
 	mode: 'development',
 	plugins: [
 		new HtmlWebpackPlugin({
-			template: './index.html'
+			template: path.resolve('./index.html')
 		})
 	]
 };
