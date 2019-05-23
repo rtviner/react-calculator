@@ -1,157 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import { sqrt, calculations, eNotation } from './calculations.js';
+import { multiplicationOrDivision, additionOrSubtraction } from './expressions.js';
+import { CALCULATOR_BUTTONS } from './buttons.js';
 import './style.css';
 
-const multiplicationOrDivision = /(\-*\d*\.?\d*)\s{1}([*/]+)\s{1}(\-*\d*\.?\d*)/;
-const additionOrSubtraction = /(\-*\d*\.?\d*)\s{1}([+-]+)\s{1}(\-*\d*\.?\d*)/;
 const DEFAULT_OUTPUT = "0";
-
-const CALCULATOR_BUTTONS = {
-    mainButtons: [
-        { label: "answer",
-            type: "answer",
-            class: "top-btn",
-            value: "Ans"
-        },
-        { label: "delete",
-            type: "delete",
-            class: "top-btn clear",
-            value: "Del"
-        },
-        { label: "clear",
-            type: "clear",
-            class: "top-btn clear",
-            value: "AC"
-        },
-        { label: "nine",
-            type: "number",
-            value: "9",
-            class: "num-btn"
-        },
-        { label: "eight",
-            type: "number",
-            value: "8",
-            class: "num-btn"
-        },
-        { label: "seven",
-            type: "number",
-            value: "7",
-            class: "num-btn"
-        },
-        { label: "six",
-            type: "number",
-            value: "6",
-            class: "num-btn"
-        },
-        { label: "five",
-            type: "number",
-            value: "5",
-            class: "num-btn"
-        },
-        { label: "four",
-            type: "number",
-            value: "4",
-            class: "num-btn"
-        },
-        { label: "three",
-            type: "number",
-            value: "3",
-            class: "num-btn"
-        },
-        { label: "two",
-            type: "number",
-            value: "2",
-            class: "num-btn"
-        },
-        { label: "one",
-            type: "number",
-            value: "1",
-            class: "num-btn"
-        }
-    ],
-    bottomButtons: [
-        { label: "zero",
-            type: "zero",
-            value: "0",
-            class: "num-btn"
-        },
-        { label: "decimal",
-            type: "decimal",
-            value: ".",
-            class: "dec-btn",
-            filter: ""
-        },
-        { label: "equals",
-            type: "equals",
-            value: "=",
-            class: "equal-btn",
-            filter: ""
-        }
-    ],
-    operatorButtons: [
-        { label: "sqRt",
-            type: "sqRt",
-            value: "√",
-            class: "op-btn"
-        },
-        { label: "multiply",
-            type: "operator",
-            value: "*",
-            class: "op-btn"
-        },
-        { label: "divide",
-            type: "operator",
-            value: "/",
-            class: "op-btn"
-        },
-        { label: "add",
-            type: "operator",
-            value: "+",
-            class: "op-btn"
-        },
-        { label: "subtract",
-            type: "operator",
-            value: "-",
-            class: "op-btn"
-        }
-    ]
-};
 
 const lastNum = (string) => {
     let outputArray = string.split(" ");
     return outputArray[outputArray.length - 1];
 };
-
-const add = (number1, number2) => number1 + number2;
-
-const subtract = (number1, number2) => number1 - number2;
-
-const multiply = (number1, number2) => {
-    let product = number1 * number2;
-    return parseFloat(product.toFixed(decimalPlaces(number1) + decimalPlaces(number2)));
-};
-
-function decimalPlaces (number) {
-    var match = ('' + number).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-    return Math.max(
-        0,
-        (match[1] ? match[1].length : 0) -
-        (match[2] ? +match[2] : 0));
-}
-
-const divide = (number1, number2) => number1 / number2;
-
-const sqrt = (number) => Math.sqrt(number);
-
-const calculations = {
-    "/": (num1, num2) => divide(num1, num2),
-    "*": (num1, num2) => multiply(num1, num2),
-    "+": (num1, num2) => add(num1, num2),
-    "-": (num1, num2) => subtract(num1, num2)
-};
-
-const eNotation = (numberString) => Number.parseFloat(numberString).toExponential(5);
 
 class App extends React.Component {
     constructor (props) {
