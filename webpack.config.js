@@ -2,7 +2,6 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
 
 module.exports = {
-	devtool: 'inline-source-map',
 	entry: './src/index.jsx',
 	output: {
 		filename: 'main.js',
