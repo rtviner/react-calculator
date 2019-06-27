@@ -1,6 +1,6 @@
 # Build a Calculator
 
-View a demo version of the drum machine [here](#)
+View a demo version of the drum machine [here](https://calculatoreact.herokuapp.com/)
 
 ## Directions
 
