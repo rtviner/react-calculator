@@ -11,18 +11,19 @@ button {
 	border-radius: 10px;
 	border: .01em solid #000;	
 	background-color: #FFF;
+  touch-action: manipulation;
 }
 
 div#calculator {
-    background-color: #536878;
-    width: 338px;
-    height: 480px;
-    display: inline-flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    border-radius: 15px;
-    margin: 0 auto;
-    margin-top: 4em;
+  background-color: #536878;
+  width: 338px;
+  height: 480px;
+  display: inline-flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  border-radius: 15px;
+  margin: 0 auto;
+  margin-top: 4em;
 }
 
 div#display {
@@ -39,27 +40,27 @@ div#display {
 }
 
 div#mainButtons {
-    display: inline-flex;
-    flex-flow: row-reverse wrap;
-    width: 70%;
-    align-content: flex-start;
-    margin: 0;
+  display: inline-flex;
+  flex-flow: row-reverse wrap;
+  width: 70%;
+  align-content: flex-start;
+  margin: 0;
 }
 
 div#bottomButtons {
-  	width: 100%;
-  	margin: 0;
-  	margin-bottom: .5em;
-    margin-left: .15em;
-  	display: flex;
-  	align-content: center;
+	width: 100%;
+	margin: 0;
+	margin-bottom: .5em;
+  margin-left: .15em;
+	display: flex;
+	align-content: center;
 }
 
 div#operatorButtons {
-    display: flex;
-    flex-flow: column;
-    margin: 0 0 .5em 0.09em;
-    align-content: flex-start;
+  display: flex;
+  flex-flow: column;
+  margin: 0 0 .5em 0.09em;
+  align-content: flex-start;
 }
 
 button#decimal,
